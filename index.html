@@ -16,60 +16,19 @@
             perspective: 1500px; /* 3D Kamera Dərinliyi */
         }
 
-        /* --- 1. GİRİŞ SLAYDERİ (Kamera Effekti İlə) --- */
-        #sliderView {
-            position: absolute; inset: 0; z-index: 10;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            /* Kameranın geriyə və ya irəliyə getməsi üçün transformasiya */
-            transition: opacity 1.2s ease, transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-            transform-style: preserve-3d;
-        }
-        
-        .bg-layer { 
-            position: absolute; inset: -5%; background-size: cover; background-position: center; 
-            transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); z-index: 1; filter: brightness(0.4);
-            transform: translateZ(0) scale(1.1);
-        }
-        .bg-layer.active { opacity: 1; transform: translateZ(0) scale(1); z-index: 2; }
-        .bg-layer.exit { opacity: 0; transform: translateZ(200px) scale(1.2); z-index: 3; } /* Kamera içəri girir */
-        
-        .circle-positioner { position: relative; z-index: 4; width: 45vh; height: 45vh; margin-bottom: 5vh; perspective: 1000px; }
-        .circle-spinner { 
-            width: 100%; height: 100%; border-radius: 50%; position: relative; 
-            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1); 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.9); overflow: hidden; border: 2px solid rgba(255,255,255,0.1); 
-        }
-        .circle-slide { position: absolute; inset: 0; background-size: cover; background-position: center; transition: opacity 1s ease; }
-        #cSlide1 { opacity: 1; } #cSlide2 { opacity: 0; }
-        
-        .text-content { position: relative; z-index: 4; text-align: center; transition: all 1s cubic-bezier(0.19, 1, 0.22, 1); }
-        .text-content h1 { font-size: 3.5rem; font-weight: 900; color: #f0c040; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 2px; }
-        .text-content p { font-size: 1.1rem; max-width: 600px; color: #ddd; }
-        .hidden-text { opacity: 0; transform: translateY(30px) scale(0.9); }
-        
-        .next-btn { position: relative; z-index: 4; margin-top: 40px; padding: 15px 45px; background: #f0c040; color: #000; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: transform 0.3s, box-shadow 0.3s; }
-        .next-btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(240,192,64,0.3); }
-        .next-btn:active { transform: scale(0.95); }
-
-        /* --- 2. KATALOQ VƏ 3D LİFT --- */
+        /* --- 1. KATALOQ VƏ 3D LİFT (Əsas Səhifə) --- */
         #catalogView {
-            position: absolute; inset: 0; z-index: 5; opacity: 0; visibility: hidden;
+            position: absolute; inset: 0; z-index: 5;
             display: flex; align-items: center; justify-content: center;
             background: radial-gradient(circle at center, #222 0%, #000 100%);
-            /* Kataloqun 3D məkanı */
             transform-style: preserve-3d;
-            transform: translateZ(-500px) rotateY(10deg);
-            transition: opacity 1.5s ease, transform 2s cubic-bezier(0.19, 1, 0.22, 1);
+            animation: fadeIn 1.5s ease-out forwards;
+            transition: transform 1.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease 0.3s;
         }
 
-        .catalog-active #catalogView { 
-            opacity: 1; visibility: visible; z-index: 20; 
-            transform: translateZ(0) rotateY(0deg); 
-        }
-        
-        /* Slayder arxaya doğru solaraq uzaqlaşır */
-        .catalog-active #sliderView { 
-            opacity: 0; pointer-events: none; transform: translateZ(300px) scale(1.2); 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateZ(-200px) rotateY(5deg); }
+            to { opacity: 1; transform: translateZ(0) rotateY(0deg); }
         }
 
         /* Liftin Qutusu */
@@ -98,7 +57,7 @@
             display: flex;
         }
 
-        /* Kabin İnteryeri (Arxa plan - Sizin pişik şəkli və ya standart) */
+        /* Kabin İnteryeri */
         .cabin-interior {
             position: absolute; inset: 0;
             background: url('https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=600&q=80') center/cover;
@@ -150,12 +109,11 @@
         .btn-interior { background: #f0c040; color: #000; border: none; width: 100%; padding: 20px; font-size: 1.1rem; font-weight: 900; text-transform: uppercase; cursor: pointer; border-radius: 10px; transition: transform 0.2s, background 0.3s; }
         .btn-interior:active { transform: scale(0.95); }
 
-        /* --- 3. İNTERYERƏ KEÇİD (ƏSL KAMERA EFEKTİ İLƏ) --- */
+        /* --- 2. İNTERYERƏ KEÇİD (ƏSL KAMERA EFEKTİ İLƏ) --- */
         body.interior-mode #catalogView {
             /* Kamera sürətlə liftin içinə doğru girir */
             transform: translateZ(1200px) rotateY(-5deg); 
             opacity: 0; pointer-events: none;
-            transition: transform 1.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease 0.3s;
         }
 
         #interiorView {
@@ -200,7 +158,6 @@
         .btn-back:hover { background: #f0c040; color: #000; border-color: #f0c040;}
 
         @media (max-width: 768px) {
-            .circle-positioner { width: 75vw; height: 75vw; }
             .elevator-wrapper { width: 240px; height: 380px; }
             .elevator-wrapper.expanded { transform: translate(0, -35%) scale(1.1) rotateY(0); }
             .config-panel { right: 5%; left: 5%; width: 90%; bottom: 2%; transform: translateY(100px) translateZ(-50px); }
@@ -212,25 +169,7 @@
 </head>
 <body>
 
-    <!-- 1. GİRİŞ SLAYDERİ -->
-    <div id="sliderView">
-        <div class="bg-layer active" id="bg1"></div>
-        <div class="bg-layer" id="bg2"></div>
-
-        <div class="circle-positioner">
-            <div class="circle-spinner" id="spinner">
-                <div class="circle-slide" id="cSlide1"></div>
-                <div class="circle-slide" id="cSlide2"></div>
-            </div>
-        </div>
-        <div class="text-content" id="textContent">
-            <h1 id="title"></h1>
-            <p id="desc"></p>
-        </div>
-        <button class="next-btn" id="nextBtn" onclick="nextAction()">Növbəti &rarr;</button>
-    </div>
-
-    <!-- 2. KATALOQ VƏ LİFT -->
+    <!-- 1. KATALOQ VƏ LİFT -->
     <div id="catalogView">
         
         <!-- Lift Qutusu -->
@@ -260,7 +199,7 @@
         </div>
     </div>
 
-    <!-- 3. İNTERYER GÖRÜNÜŞÜ -->
+    <!-- 2. İNTERYER GÖRÜNÜŞÜ -->
     <div id="interiorView">
         <button class="btn-back" onclick="backToCatalog()">X Geri Qayıt</button>
         <div class="cop-panel" id="buttonPanel">
@@ -270,72 +209,8 @@
 
     <script>
         // Ümumi dəyişənlər
-        const slides = [
-            { title: "Liftlərin Quraşdırılması", desc: "Premium keyfiyyətli liftlərin təhlükəsiz və peşəkar şəkildə quraşdırılması.", img: "https://images.unsplash.com/photo-1574766861502-3c1ee127bcfb?auto=format&fit=crop&w=800&q=80" },
-            { title: "Liftlərin Dizaynı", desc: "İnteryerinizə uyğun müasir, lüks və xüsusi dizaynlı kabin həlləri.", img: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80" },
-            { title: "Texniki Servis", desc: "7/24 fasiləsiz və operativ texniki xidmət ilə liftlərinizin ömrünü uzadırıq.", img: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=800&q=80" }
-        ];
-
-        let currentIndex = 0, currentRotation = 0, activeBg = 1, isAnimating = false;
         const BASE_PRICE = 35000, FLOOR_PRICE = 200;
         let currentFloors = 1, isExpanded = false;
-
-        function initSlider() {
-            document.getElementById('cSlide1').style.backgroundImage = `url('${slides[0].img}')`;
-            document.getElementById('bg1').style.backgroundImage = `url('${slides[0].img}')`;
-            document.getElementById('title').innerText = slides[0].title;
-            document.getElementById('desc').innerText = slides[0].desc;
-        }
-
-        // --- KAMERA EFEKTİ İLƏ SLAYDER KEÇİDİ ---
-        function nextAction() {
-            if (isAnimating) return;
-
-            if (currentIndex === slides.length - 1) {
-                document.body.classList.add('catalog-active');
-                return;
-            }
-
-            isAnimating = true;
-            currentIndex++;
-            currentRotation -= 120; 
-
-            const textContent = document.getElementById('textContent');
-            const spinner = document.getElementById('spinner');
-            
-            if (currentIndex === slides.length - 1) {
-                setTimeout(() => { document.getElementById('nextBtn').innerText = "Kataloqa Keçid"; }, 600);
-            }
-
-            const currentBgEl = document.getElementById(`bg${activeBg}`);
-            const nextBgId = activeBg === 1 ? 2 : 1;
-            const nextBgEl = document.getElementById(`bg${nextBgId}`);
-
-            nextBgEl.style.backgroundImage = `url('${slides[currentIndex].img}')`;
-            
-            // Kamera 3D Zoom effekti
-            currentBgEl.classList.remove('active');
-            currentBgEl.classList.add('exit');
-            nextBgEl.classList.remove('exit');
-            nextBgEl.classList.add('active');
-            
-            activeBg = nextBgId;
-
-            const nextLayer = activeBg === 1 ? 2 : 1; 
-            document.getElementById(`cSlide${nextLayer}`).style.backgroundImage = `url('${slides[currentIndex].img}')`;
-            document.getElementById(`cSlide${nextLayer}`).style.opacity = 1;
-            document.getElementById(`cSlide${activeBg === 1 ? 2 : 1}`).style.opacity = 0;
-
-            textContent.classList.add('hidden-text');
-            spinner.style.transform = `rotate(${currentRotation}deg)`;
-
-            setTimeout(() => {
-                document.getElementById('title').innerText = slides[currentIndex].title;
-                document.getElementById('desc').innerText = slides[currentIndex].desc;
-                textContent.classList.remove('hidden-text');
-                isAnimating = false;
-            }, 700);
-        }
 
         // --- LİFTİN QAPILARI VƏ MOBİL DOKUNUŞ ---
         function touchOpen() { document.getElementById('elevator').classList.add('touch-open'); }
@@ -378,8 +253,6 @@
                 panel.appendChild(btn);
             }
         }
-
-        initSlider();
     </script>
 </body>
 </html>
